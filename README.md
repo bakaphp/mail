@@ -1,119 +1,67 @@
 # Phalcon\Mailer
 
-Mailer wrapper over SwiftMailer for Phalcon.
+Baka email wrapper for Swiftmailer with queue
 
 ## Configure
 
 **SMTP**
 
 ```php
-$config = [
-    'driver'     => 'smtp',
-    'host'       => 'smtp.gmail.com',
-    'port'       => 465,
-    'encryption' => 'ssl',
-    'username'   => 'example@gmail.com',
-    'password'   => 'your_password',
-    'from'       => [
-            'email' => 'example@gmail.com',
-            'name'  => 'YOUR FROM NAME'
-        ]
+'email' => [
+    'driver' => 'smtp',
+    'host' => getenv('EMAIL_HOST'),
+    'port' => getenv('EMAIL_PORT'),
+    'username' => getenv('EMAIL_USER'),
+    'password' => getenv('EMAIL_PASS'),
+    'from' => [
+        'email' => 'noreply@naruho.do',
+        'name' => 'YOUR FROM NAME',
+    ],
+    'debug' => [
+        'from' => [
+            'email' => 'noreply@naruho.do',
+            'name' => 'YOUR FROM NAME',
+        ],
+    ],
 ];
 ```
 
-**Sendmail**
-
-```php
-$config = [
-    'driver'    => 'sendmail',
-    'sendmail'  => '/usr/sbin/sendmail -bs',
-    'from'      => [
-        'email' => 'example@gmail.com',
-        'name'  => 'YOUR FROM NAME'
-    ]
-];
-```
-
-**PHP Mail**
-
-```php
-$config = [
-    'driver'    => 'mail',
-    'from'      => [
-        'email' => 'example@gmail.com',
-        'name'  => 'YOUR FROM NAME'
-    ]
-];
-```
-
-## Example
+## Setup DI
 
 **createMessage()**
 
 ```php
-$mailer = new \Phalcon\Mailer\Manager($config);
+$di->set('mail', function () use ($config, $di) {
 
-$message = $mailer->createMessage()
-        ->to('example_to@gmail.com', 'OPTIONAL NAME')
-        ->subject('Hello world!')
-        ->content('Hello world!');
+    //setup
+    $mailer = new \Baka\Mail\Manager($config->email->toArray());
 
-// Set the Cc addresses of this message.
-$message->cc('example_cc@gmail.com');
-
-// Set the Bcc addresses of this message.
-$message->bcc('example_bcc@gmail.com');
-
-// Send message
-$message->send();
+    return $mailer->createMessage();
+});
 ```
 
-**createMessageFromView()**
+**Sending a normal email()**
 ```php
-/**
- * Global viewsDir for current instance Mailer\Manager.
- * 
- * This parameter is OPTIONAL, If it is not specified, 
- * use DI from view service (getViewsDir)
- */
-$config['viewsDir'] = __DIR__ . '/views/email/';
-
-$mailer = new \Phalcon\Mailer\Manager($config);
-
-// view relative to the folder viewsDir (REQUIRED)
-$viewPath = 'email/example_message';
-
-// Set variables to views (OPTIONAL)
-$params = [ 
-    'var1' => 'VAR VALUE 1',
-    'var2' => 'VAR VALUE 2',
-    // ...
-    'varN' => 'VAR VALUE N',
+  $this->mail
+    ->to('max@mctekk.com')
+    ->subject('Test Normal Email queue')
+    ->content('normal email send via queue')
+    ->send();
 ];
 
-/**
- * The local path to the folder viewsDir only this message. (OPTIONAL)
- * 
- * This parameter is OPTIONAL, If it is not specified, 
- * use global parameter "viewsDir" from configuration.
- */
-$viewsDirLocal = __DIR__ . '/views/email/local/';
-
-
-$message = $mailer->createMessageFromView($viewPath, $params, $viewsDirLocal)
-        ->to('example_to@gmail.com', 'OPTIONAL NAME')
-        ->subject('Hello world!');
-
-// Set the Cc addresses of this message.
-$message->cc('example_cc@gmail.com');
-
-// Set the Bcc addresses of this message.
-$message->bcc('example_bcc@gmail.com');
-
-// Send message
-$message->send();
 ```
 
+**Sending a template normal email()**
+```php
+  $this->mail
+    ->to('max@mctekk.com')
+    ->subject('Test Template Email queue')
+    ->params(['name' => 'dfad'])
+    ->template('email.volt') //you can also use template() default template is email.volt
+    ->send();
+];
+
+```
 
 ## Events
 - `mailer:beforeCreateMessage`
@@ -122,3 +70,25 @@ $message->send();
 - `mailer:afterSend`
 - `mailer:beforeAttachFile`
 - `mailer:afterAttachFile`
+
+
+## Setup CLI
+
+```php
+
+use Phalcon\Cli\Task;
+
+/**
+ * Class LsTask
+ * @description('List directory content', 'The content will be displayed in the standard output')
+ */
+class MainTask extends Task
+{
+    use Baka\Mail\JobTrait;
+}
+
+```
+
+## Running CLI
+
+`php app.php main mailqueue email_queue`

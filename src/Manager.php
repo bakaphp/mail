@@ -87,18 +87,11 @@ class Manager extends \Phalcon\Mailer\Manager
      *
      * @return string
      */
-    public function setRenderView($viewPath, $params, $viewsDir = null)
+    public function setRenderView($viewPath, $params)
     {
         $view = $this->getView();
 
-        if ($viewsDir !== null) {
-            $viewsDirOld = $view->getViewsDir();
-            $view->setViewsDir($viewsDir);
-            $content = $view->render($viewPath, $params);
-            $view->setViewsDir($viewsDirOld);
-            return $content;
-        }
-
-        return $view->render($viewPath, $params);
+        $content = $view->render($viewPath, $params);
+        return $content;
     }
 }

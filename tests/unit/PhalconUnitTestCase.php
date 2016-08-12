@@ -1,5 +1,6 @@
 <?php
 
+use Phalcon\Mvc\View\Engine\Volt as VoltEngine;
 use \Phalcon\Di;
 use \Phalcon\Test\UnitTestCase as PhalconTestCase;
 
@@ -104,6 +105,33 @@ abstract class PhalconUnitTestCase extends PhalconTestCase
             ]);
 
             return $queue;
+        });
+
+        $di->set('view', function () use ($config) {
+
+            $view = new \Phalcon\Mvc\View\Simple();
+            $view->setViewsDir(realpath(dirname(__FILE__)) . '/view/');
+
+            $view->registerEngines([
+                '.volt' => function ($view, $di) use ($config) {
+
+                    $volt = new VoltEngine($view, $di);
+
+                    $volt->setOptions(array(
+                        'compiledPath' => realpath(dirname(__FILE__)) . '/view/cache/',
+                        'compiledSeparator' => '_',
+                        //since production is true or false, and we inverse the value to be false in production true in debug
+                        'compileAlways' => true,
+                    ));
+
+                    return $volt;
+                },
+                '.php' => function ($view, $di) {
+                    return new \Phalcon\Mvc\View\Engine\Php($view, $di);
+                },
+            ]);
+
+            return $view;
         });
 
         $di->set('modelsManager', function () {

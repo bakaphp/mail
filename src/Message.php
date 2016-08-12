@@ -28,11 +28,6 @@ class Message extends \Phalcon\Mailer\Message
      */
     public function content($content, $contentType = self::CONTENT_TYPE_HTML, $charset = null)
     {
-        //if we have params thats means we are using a template
-        if (is_array($this->params)) {
-            $content = $this->getManager()->setRenderView($this->viewPath, $this->params, $this->viewsDirLocal);
-        }
-
         $this->getMessage()->setBody($content, $contentType, $charset);
 
         return $this;
@@ -132,9 +127,18 @@ class Message extends \Phalcon\Mailer\Message
      *
      * @return $this
      */
-    public function template($template)
+    public function template($template = 'email.volt')
     {
         $this->viewPath = $template;
+
+        //if we have params thats means we are using a template
+        if (is_array($this->params)) {
+
+            $content = $this->getManager()->setRenderView($this->viewPath, $this->params);
+        }
+
+        $this->getMessage()->setBody($content, self::CONTENT_TYPE_HTML);
+
         return $this;
     }
 

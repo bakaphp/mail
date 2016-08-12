@@ -10,12 +10,13 @@ trait JobTrait
 {
 
     /**
-     * Run the email queue from phalcon CLI
-     * php cli/app.php Email generalQueue
+     * @description("Email queue")
+     *
+     * @param({'type'='string', 'name'='queueName', 'description'='name of the queue , default email_queue' })
      *
      * @return void
      */
-    public function generalQueueAction($queueName = null)
+    public function mailQueueAction($queueName)
     {
         if (empty($queueName)) {
             echo "\nYou have to define a queue name.\n\n";
@@ -46,43 +47,19 @@ trait JobTrait
         $queue->addWorker($queueName[0], function (Job $job) use ($di, $config) {
             try {
 
-                $emailInfo = $job->getBody();
-
-                //default template
-                $template = 'templates/email';
-
-                //specify template
-                if (array_key_exists('template', $emailInfo)) {
-                    $template = $emailInfo['template'];
-                }
-
-                //subject and from
-                $subject = $emailInfo['subject'];
-                $from = array($this->config->email->from->email => $this->config->email->from->name);
-
-                //to who?
-                //if in producto realuser email, development? max@mctekk.com email
-                $to = $config->application->production ? $emailInfo['to'] : [$this->config->email->debug->from->email => $this->config->email->debug->from->name];
-
-                //email template and replace variables
-                $emailHtml = $di->getViewSimple()->render($template, $emailInfo);
+                $message = $job->getBody();
 
                 //email configuration
-                $transport = Swift_SmtpTransport::newInstance($config->email->host, $config->email->port);
+                $transport = \Swift_SmtpTransport::newInstance($config->email->host, $config->email->port);
                 $transport->setUsername($config->email->username);
                 $transport->setPassword($config->email->password);
-                $swift = Swift_Mailer::newInstance($transport);
-
-                $message = new Swift_Message($subject);
-                $message->setFrom($from);
-                $message->setBody($emailHtml, 'text/html');
-                $message->setTo($to);
-                //$message->addPart($text, 'text/plain');
+                $swift = \Swift_Mailer::newInstance($transport);
 
                 $failures = [];
                 if ($recipients = $swift->send($message, $failures)) {
-                    $sendTo = each($to);
-                    $this->log->addInfo("EmailTask Message successfully sent to: {$sendTo['key']}");
+
+                    $this->log->addInfo("EmailTask Message successfully sent to:", $message->getTo());
+
                 } else {
                     $this->log->addError("EmailTask There was an error: ", $failures);
                 }
