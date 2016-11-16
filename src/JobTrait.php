@@ -5,6 +5,8 @@ namespace Baka\Mail;
 use Phalcon\Queue\Beanstalk\Extended as BeanstalkExtended;
 use Phalcon\Queue\Beanstalk\Job;
 use \Exception as Exception;
+use \Swift_Mime_Message;
+use \Swift_SmtpTransport;
 
 trait JobTrait
 {
@@ -45,9 +47,15 @@ trait JobTrait
 
         //call queue tube
         $queue->addWorker($queueName[0], function (Job $job) use ($di, $config) {
+
             try {
 
                 $message = $job->getBody();
+
+                if (!$message instanceof Swift_Mime_Message) {
+                    $this->log->addError('Something went wrong with the message we are trying to send ', $message);
+                    return;
+                }
 
                 //email configuration
                 $transport = \Swift_SmtpTransport::newInstance($config->email->host, $config->email->port);
