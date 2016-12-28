@@ -12,13 +12,15 @@
         "php": ">=7.0",
         "ext-phalcon": ">=3.0.0",
         "phalcon/incubator": "~3.0",
-        "nesbot/carbon": "^1.21"
+        "nesbot/carbon": "^1.21",
+        "duncan3dc/fork-helper": "^1.1"
     },
     "require-dev": {
         "codeception/verify": "*",
         "vlucas/phpdotenv": "^2.0",
         "phalcon/incubator": "~3.0",
-        "nesbot/carbon": "^1.21"
+        "nesbot/carbon": "^1.21",
+        "duncan3dc/fork-helper": "^1.1"
     },
     "autoload": {
         "psr-4": {
