@@ -13,14 +13,14 @@
         "ext-phalcon": ">=3.0.0",
         "phalcon/incubator": "~3.0",
         "nesbot/carbon": "^1.21",
-        "duncan3dc/fork-helper": "^1.1"
+        "duncan3dc/fork-helper": "dev-master"
     },
     "require-dev": {
         "codeception/verify": "*",
         "vlucas/phpdotenv": "^2.0",
         "phalcon/incubator": "~3.0",
         "nesbot/carbon": "^1.21",
-        "duncan3dc/fork-helper": "^1.1"
+        "duncan3dc/fork-helper": "dev-master"
     },
     "autoload": {
         "psr-4": {
