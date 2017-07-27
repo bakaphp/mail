@@ -50,17 +50,52 @@ trait JobTrait
 
             try {
 
-                $message = $job->getBody();
+                $jobBody = $job->getBody();
+                $auth = null;
 
+                //if its a array then we know we are getting more settings
+                if (is_array($jobBody) && array_key_exists("auth", $jobBody) && array_key_exists("message", $jobBody)) {
+                    $message = $jobBody['message'];
+                    $auth = $jobBody['auth'];
+                } else {
+                    //its just normal email
+                    $message = $jobBody;
+                }
+
+                //vaalidate
                 if (!$message instanceof Swift_Mime_Message) {
                     $this->log->addError('Something went wrong with the message we are trying to send ', $message);
                     return;
                 }
 
+                //email auth settings
+                $username = $config->email->username;
+                $password = $config->email->password;
+                $host = $config->email->host;
+                $port = $config->email->port;
+
+                //if get the the auth we need ot overwrite it
+                if ($auth) {
+                    $username = $auth['username'];
+                    $password = $auth['password'];
+
+                    //ovewrite host
+                    if (array_key_exists('host', $auth)) {
+                        $host = $auth['host'];
+                    }
+
+                    //ovewrite port
+                    if (array_key_exists('port', $auth)) {
+                        $port = $auth['port'];
+                    }
+                }
+
                 //email configuration
-                $transport = \Swift_SmtpTransport::newInstance($config->email->host, $config->email->port);
-                $transport->setUsername($config->email->username);
-                $transport->setPassword($config->email->password);
+                $transport = \Swift_SmtpTransport::newInstance($host, $port);
+
+                $transport->setUsername($username);
+                $transport->setPassword($password);
+
                 $swift = \Swift_Mailer::newInstance($transport);
 
                 $failures = [];

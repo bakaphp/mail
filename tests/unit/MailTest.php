@@ -35,6 +35,23 @@ class AuthTest extends PhalconUnitTestCase
     }
 
     /**
+     * test the smtp configuration
+     *
+     * @return boolean
+     */
+    public function testEmailSmtpConfig()
+    {
+        //send email
+        $this->_getDI()->get('mail')
+            ->to('max@mctekk.com')
+            ->subject('Test Template Email queue')
+            ->params(['name' => 'dfad'])
+            ->smtp(['username' => 'max@mctekk.com', 'password' => 'nosenose'])
+            ->template('email.volt') //you can also use template() default template is email.volt
+            ->send();
+    }
+
+    /**
      * this runs before everyone
      */
     protected function setUp()

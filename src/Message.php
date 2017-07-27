@@ -2,6 +2,8 @@
 
 namespace Baka\Mail;
 
+use Exception;
+
 /**
  * Class Message
  *
@@ -13,6 +15,8 @@ class Message extends \Phalcon\Mailer\Message
     protected $viewPath = null;
     protected $params = null;
     protected $viewsDirLocal = null;
+    protected $smtp = null;
+    protected $auth = false;
 
     /**
      * Set the body of this message, either as a string, or as an instance of
@@ -71,14 +75,45 @@ class Message extends \Phalcon\Mailer\Message
         $queue = $this->getManager()->getQueue();
         //$queueName = $this->
 
-        $queue->putInTube($this->queueName, $this->getMessage());
+        if ($this->auth) {
+
+            $queue->putInTube($this->queueName, [
+                'message' => $this->getMessage(),
+                'auth' => $this->smtp,
+            ]);
+
+        } else {
+            $queue->putInTube($this->queueName, $this->getMessage());
+        }
 
         /* $count = $this->getManager()->getSwift()->send($this->getMessage(), $this->failedRecipients);
-
     if ($eventManager) {
     $eventManager->fire('mailer:afterSend', $this, [$count, $this->failedRecipients]);
     }
     return $count;*/
+    }
+
+    /**
+     * Overwrite the baka SMTP connection for this current email
+     *
+     * @param  array  $smtp
+     * @return this
+     */
+    public function smtp(array $params)
+    {
+        //validate the user params
+        if (!array_key_exists('username', $params)) {
+            throw new Exception("We need a username");
+        }
+
+        if (!array_key_exists('password', $params)) {
+            throw new Exception("We need a password");
+        }
+
+        $this->smtp = $params;
+        $this->auth = true;
+
+        return $this;
     }
 
     /**
