@@ -115,9 +115,7 @@ class Message extends \Phalcon\Mailer\Message
         
         $failures = [];
         
-        if (!$confirmation = $swift->send($message, $failures)) {
-            throw new \Exception("EmailTask There was an error");
-        }
+        $swift->send($message, $failures);
     }
 
     /**
