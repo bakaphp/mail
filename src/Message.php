@@ -76,12 +76,10 @@ class Message extends \Phalcon\Mailer\Message
         //$queueName = $this->
 
         if ($this->auth) {
-
             $queue->putInTube($this->queueName, [
                 'message' => $this->getMessage(),
                 'auth' => $this->smtp,
             ]);
-
         } else {
             $queue->putInTube($this->queueName, $this->getMessage());
         }
@@ -91,6 +89,35 @@ class Message extends \Phalcon\Mailer\Message
     $eventManager->fire('mailer:afterSend', $this, [$count, $this->failedRecipients]);
     }
     return $count;*/
+    }
+
+    /**
+     * Send message instantly, without a queue
+     *
+     * @return void
+     */
+    public function sendNow()
+    {
+        $config = $this->getManager()->getDI()->getConfig();
+        $message = $this->getMessage();
+
+        $username = $config->email->username;
+        $password = $config->email->password;
+        $host = $config->email->host;
+        $port = $config->email->port;
+        
+        $transport = \Swift_SmtpTransport::newInstance($host, $port);
+        
+        $transport->setUsername($username);
+        $transport->setPassword($password);
+        
+        $swift = \Swift_Mailer::newInstance($transport);
+        
+        $failures = [];
+        
+        if (!$confirmation = $swift->send($message, $failures)) {
+            throw new \Exception("EmailTask There was an error");
+        }
     }
 
     /**
@@ -168,7 +195,6 @@ class Message extends \Phalcon\Mailer\Message
 
         //if we have params thats means we are using a template
         if (is_array($this->params)) {
-
             $content = $this->getManager()->setRenderView($this->viewPath, $this->params);
         }
 
@@ -176,5 +202,4 @@ class Message extends \Phalcon\Mailer\Message
 
         return $this;
     }
-
 }
