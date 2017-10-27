@@ -63,6 +63,17 @@ $di->set('mail', function () use ($config, $di) {
 
 ```
 
+**Sending a normal email instantly, without queue()**
+```php
+  $this->mail
+    ->to('max@mctekk.com')
+    ->subject('Test Normal Email queue')
+    ->content('normal email send via queue')
+    ->sendNow();
+];
+
+```
+
 ## Events
 - `mailer:beforeCreateMessage`
 - `mailer:afterCreateMessage`
