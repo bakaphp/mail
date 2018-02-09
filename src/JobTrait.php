@@ -96,7 +96,7 @@ trait JobTrait
 
                 $failures = [];
                 if ($recipients = $swift->send($message, $failures)) {
-                    $this->log->info('EmailTask Message successfully sent to:' . $message->getTo());
+                    $this->log->info('EmailTask Message successfully sent to:', [$message->getTo()]);
                 } else {
                     $this->log->error('EmailTask There was an error: ', [$failures]);
                 }
