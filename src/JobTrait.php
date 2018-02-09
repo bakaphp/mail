@@ -60,7 +60,7 @@ trait JobTrait
 
                 //vaalidate
                 if (!$message instanceof Swift_Mime_Message) {
-                    $this->log->addError('Something went wrong with the message we are trying to send ', $message);
+                    $this->log->error('Something went wrong with the message we are trying to send ', [$message]);
                     return;
                 }
 
@@ -96,7 +96,7 @@ trait JobTrait
 
                 $failures = [];
                 if ($recipients = $swift->send($message, $failures)) {
-                    $this->log->addInfo('EmailTask Message successfully sent to:', $message->getTo());
+                    $this->log->info('EmailTask Message successfully sent to:' . $message->getTo());
                 } else {
                     $this->log->error('EmailTask There was an error: ', $failures);
                 }
