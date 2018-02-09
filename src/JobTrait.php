@@ -4,13 +4,11 @@ namespace Baka\Mail;
 
 use Phalcon\Queue\Beanstalk\Extended as BeanstalkExtended;
 use Phalcon\Queue\Beanstalk\Job;
-use \Exception as Exception;
-use \Swift_Mime_Message;
-use \Swift_SmtpTransport;
+use Swift_Mime_Message;
+use Throwable;
 
 trait JobTrait
 {
-
     /**
      * @description("Email queue")
      *
@@ -36,10 +34,10 @@ trait JobTrait
         }
 
         //call queue
-        $queue = new BeanstalkExtended(array(
+        $queue = new BeanstalkExtended([
             'host' => $this->config->beanstalk->host,
             'prefix' => $this->config->beanstalk->prefix,
-        ));
+        ]);
 
         //dependent variables
         $config = $this->config;
@@ -47,14 +45,12 @@ trait JobTrait
 
         //call queue tube
         $queue->addWorker($queueName[0], function (Job $job) use ($di, $config) {
-
             try {
-
                 $jobBody = $job->getBody();
                 $auth = null;
 
                 //if its a array then we know we are getting more settings
-                if (is_array($jobBody) && array_key_exists("auth", $jobBody) && array_key_exists("message", $jobBody)) {
+                if (is_array($jobBody) && array_key_exists('auth', $jobBody) && array_key_exists('message', $jobBody)) {
                     $message = $jobBody['message'];
                     $auth = $jobBody['auth'];
                 } else {
@@ -100,14 +96,12 @@ trait JobTrait
 
                 $failures = [];
                 if ($recipients = $swift->send($message, $failures)) {
-
-                    $this->log->addInfo("EmailTask Message successfully sent to:", $message->getTo());
-
+                    $this->log->addInfo('EmailTask Message successfully sent to:', $message->getTo());
                 } else {
-                    $this->log->addError("EmailTask There was an error: ", $failures);
+                    $this->log->error('EmailTask There was an error: ', $failures);
                 }
-            } catch (Exception $e) {
-                $this->log->addError($e->getMessage());
+            } catch (Throwable $e) {
+                $this->log->error($e->getMessage());
                 echo $e->getMessage() . "\n";
             }
 
