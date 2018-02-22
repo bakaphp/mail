@@ -43,7 +43,7 @@ $di->set('mail', function () use ($config, $di) {
 **Sending a normal email()**
 ```php
   $this->mail
-    ->to('info@mctekk.com')
+    ->to('info@domain.do')
     ->subject('Test Normal Email queue')
     ->content('normal email send via queue')
     ->send();
@@ -54,9 +54,9 @@ $di->set('mail', function () use ($config, $di) {
 **Sending a template normal email()**
 ```php
   $this->mail
-    ->to('info@mctekk.com')
+    ->to('info@domain.dom')
     ->subject('Test Template Email queue')
-    ->params(['name' => 'dfad'])
+    ->params(['name' => 'test'])
     ->template('email.volt') //you can also use template() default template is email.volt
     ->send();
 ];
@@ -66,9 +66,9 @@ $di->set('mail', function () use ($config, $di) {
 **Sending a normal email instantly, without queue()**
 ```php
   $this->mail
-    ->to('info@mctekk.com')
-    ->subject('Test Normal Email queue')
-    ->content('normal email send via queue')
+    ->to('info@domain.do')
+    ->subject('Test Normal Email now')
+    ->content('send normal email now')
     ->sendNow();
 ];
 
