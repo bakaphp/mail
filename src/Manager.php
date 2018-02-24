@@ -89,6 +89,11 @@ class Manager extends \Phalcon\Mailer\Manager
      */
     public function setRenderView($viewPath, $params)
     {
+        //set volt engine incubator 3.3
+        $this->setViewEngines([
+            '.volt' => 'Phalcon\\Mvc\\View\\Engine\\Volt',
+        ]);
+
         $view = $this->getView();
 
         $content = $view->render($viewPath, $params);
