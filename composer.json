@@ -1,6 +1,7 @@
 {
     "name": "baka/mail",
     "description": "Baka Component for handling email via a simple queue interfase",
+    "license": "MIT",
     "authors": [
         {
             "name": "kaioken",
@@ -18,7 +19,7 @@
     "require-dev": {
         "codeception/verify": "*",
         "vlucas/phpdotenv": "^2.0",
-        "phalcon/incubator": "~3.0",
+        "phalcon/incubator": ">=3.0",
         "nesbot/carbon": "^1.21",
         "duncan3dc/fork-helper": "dev-master"
     },
