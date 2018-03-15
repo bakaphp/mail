@@ -2,6 +2,8 @@
 
 namespace Baka\Mail;
 
+use Phalcon\Mvc\View\Engine\Volt;
+
 /**
  * Class Manager
  *
@@ -91,7 +93,17 @@ class Manager extends \Phalcon\Mailer\Manager
     {
         //set volt engine incubator 3.3
         $this->setViewEngines([
-            '.volt' => 'Phalcon\\Mvc\\View\\Engine\\Volt',
+            '.volt' => function ($view, $di) {
+                $volt = new Volt($view, $di);
+
+                $volt->setOptions([
+                        'compiledPath' => APP_PATH . '/cache/volt/',
+                        'compiledSeparator' => '_',
+                        'compileAlways' => !$this->getDI()->get('config')->application->production,
+                ]);
+
+                return $volt;
+            }
         ]);
 
         $view = $this->getView();
