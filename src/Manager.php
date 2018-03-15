@@ -91,15 +91,15 @@ class Manager extends \Phalcon\Mailer\Manager
      */
     public function setRenderView($viewPath, $params)
     {
-        //set volt engine incubator 3.3
+        //Set volt tempalte enging and specify the cache path
         $this->setViewEngines([
-            '.volt' => function ($view, $di) {
-                $volt = new Volt($view, $di);
+            '.volt' => function ($view = null) {
+                $volt = new Volt($view);
 
                 $volt->setOptions([
-                        'compiledPath' => APP_PATH . '/cache/volt/',
-                        'compiledSeparator' => '_',
-                        'compileAlways' => !$this->getDI()->get('config')->application->production,
+                    'compiledPath' => APP_PATH . '/cache/volt/',
+                    'compiledSeparator' => '_',
+                    'compileAlways' => !$this->getDI()->get('config')->application->production,
                 ]);
 
                 return $volt;
