@@ -100,6 +100,11 @@ trait JobTrait
         $queue->doWork();
     }
 
+    /**
+     * Runs all the configuration validations needed
+     *
+     * @return void
+     */
     protected function validateConfigurations()
     {
         $this->validateQueueNameConfiguration();
@@ -107,6 +112,11 @@ trait JobTrait
         $this->validateEmailConfiguration();
     }
 
+    /**
+     * Validates whether a queue name was provided or not
+     *
+     * @return void
+     */
     protected function validateQueueNameConfiguration()
     {
         if (empty($queueName)) {
@@ -115,6 +125,11 @@ trait JobTrait
         }
     }
 
+    /**
+     * Validates whether beanstlak is configured or not
+     *
+     * @return void
+     */
     protected function validateBeanstalkConfiguration()
     {
         if (!is_object($this->config->beanstalk)) {
@@ -123,6 +138,11 @@ trait JobTrait
         }
     }
 
+    /**
+     * Validates whether email is configured or not
+     *
+     * @return void
+     */
     protected function validateEmailConfiguration()
     {
         if (!is_object($this->config->email)) {
