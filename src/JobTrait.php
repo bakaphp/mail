@@ -18,20 +18,7 @@ trait JobTrait
      */
     public function mailQueueAction($queueName)
     {
-        if (empty($queueName)) {
-            echo "\nYou have to define a queue name.\n\n";
-            return;
-        }
-
-        if (!is_object($this->config->beanstalk)) {
-            echo "\nNeed to configure beanstalkd on your phalcon configuration.\n\n";
-            return;
-        }
-
-        if (!is_object($this->config->email)) {
-            echo "\nNeed to configure email on your phalcon configuration.\n\n";
-            return;
-        }
+        $this->validateConfigurations();
 
         //call queue
         $queue = new BeanstalkExtended([
@@ -111,5 +98,36 @@ trait JobTrait
 
         // Start processing queues
         $queue->doWork();
+    }
+
+    protected function validateConfigurations()
+    {
+        $this->validateQueueNameConfiguration();
+        $this->validateBeanstalkConfiguration();
+        $this->validateEmailConfiguration();
+    }
+
+    protected function validateQueueNameConfiguration()
+    {
+        if (empty($queueName)) {
+            echo "\nYou have to define a queue name.\n\n";
+            return;
+        }
+    }
+
+    protected function validateBeanstalkConfiguration()
+    {
+        if (!is_object($this->config->beanstalk)) {
+            echo "\nNeed to configure beanstalkd on your phalcon configuration.\n\n";
+            return;
+        }
+    }
+
+    protected function validateEmailConfiguration()
+    {
+        if (!is_object($this->config->email)) {
+            echo "\nNeed to configure email on your phalcon configuration.\n\n";
+            return;
+        }
     }
 }
