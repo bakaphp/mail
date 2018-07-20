@@ -18,20 +18,7 @@ trait JobTrait
      */
     public function mailQueueAction($queueName)
     {
-        if (empty($queueName)) {
-            echo "\nYou have to define a queue name.\n\n";
-            return;
-        }
-
-        if (!is_object($this->config->beanstalk)) {
-            echo "\nNeed to configure beanstalkd on your phalcon configuration.\n\n";
-            return;
-        }
-
-        if (!is_object($this->config->email)) {
-            echo "\nNeed to configure email on your phalcon configuration.\n\n";
-            return;
-        }
+        $this->validateConfigurations();
 
         //call queue
         $queue = new BeanstalkExtended([
@@ -111,5 +98,56 @@ trait JobTrait
 
         // Start processing queues
         $queue->doWork();
+    }
+
+    /**
+     * Runs all the configuration validations needed
+     *
+     * @return void
+     */
+    protected function validateConfigurations()
+    {
+        $this->validateQueueNameConfiguration();
+        $this->validateBeanstalkConfiguration();
+        $this->validateEmailConfiguration();
+    }
+
+    /**
+     * Validates whether a queue name was provided or not
+     *
+     * @return void
+     */
+    protected function validateQueueNameConfiguration()
+    {
+        if (empty($queueName)) {
+            echo "\nYou have to define a queue name.\n\n";
+            return;
+        }
+    }
+
+    /**
+     * Validates whether beanstlak is configured or not
+     *
+     * @return void
+     */
+    protected function validateBeanstalkConfiguration()
+    {
+        if (!is_object($this->config->beanstalk)) {
+            echo "\nNeed to configure beanstalkd on your phalcon configuration.\n\n";
+            return;
+        }
+    }
+
+    /**
+     * Validates whether email is configured or not
+     *
+     * @return void
+     */
+    protected function validateEmailConfiguration()
+    {
+        if (!is_object($this->config->email)) {
+            echo "\nNeed to configure email on your phalcon configuration.\n\n";
+            return;
+        }
     }
 }
