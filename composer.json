@@ -14,7 +14,8 @@
         "ext-phalcon": ">=3.0.0",
         "phalcon/incubator": ">=3.0",
         "nesbot/carbon": "^1.21",
-        "duncan3dc/fork-helper": "^2.2.0"
+        "duncan3dc/fork-helper": "^2.2.0",
+        "swiftmailer/swiftmailer": "~5.2"
     },
     "require-dev": {
         "codeception/verify": "*",
