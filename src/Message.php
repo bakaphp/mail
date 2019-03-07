@@ -32,12 +32,11 @@ class Message extends \Phalcon\Mailer\Message
      */
     public function content($content, $contentType = self::CONTENT_TYPE_HTML, $charset = null)
     {
-        $this->getMessage()->setBody($content, $contentType, $charset);
-
         if (isset($this->params) && is_array($this->params)) {
             $content = $this->setDynamicContent($this->params, $content);
-            $this->getMessage()->setBody($content, $contentType, $charset);
         }
+
+        $this->getMessage()->setBody($content, $contentType, $charset);
 
         return $this;
     }
