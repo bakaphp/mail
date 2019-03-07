@@ -32,6 +32,10 @@ class Message extends \Phalcon\Mailer\Message
      */
     public function content($content, $contentType = self::CONTENT_TYPE_HTML, $charset = null)
     {
+        if (isset($this->params) && is_array($this->params)) {
+            $content = $this->setDynamicContent($this->params, $content);
+        }
+
         $this->getMessage()->setBody($content, $contentType, $charset);
 
         return $this;
@@ -105,16 +109,16 @@ class Message extends \Phalcon\Mailer\Message
         $password = $config->email->password;
         $host = $config->email->host;
         $port = $config->email->port;
-        
+
         $transport = \Swift_SmtpTransport::newInstance($host, $port);
-        
+
         $transport->setUsername($username);
         $transport->setPassword($password);
-        
+
         $swift = \Swift_Mailer::newInstance($transport);
-        
+
         $failures = [];
-        
+
         $swift->send($message, $failures);
     }
 
@@ -128,11 +132,11 @@ class Message extends \Phalcon\Mailer\Message
     {
         //validate the user params
         if (!array_key_exists('username', $params)) {
-            throw new Exception("We need a username");
+            throw new Exception('We need a username');
         }
 
         if (!array_key_exists('password', $params)) {
-            throw new Exception("We need a password");
+            throw new Exception('We need a password');
         }
 
         $this->smtp = $params;
@@ -199,5 +203,24 @@ class Message extends \Phalcon\Mailer\Message
         $this->getMessage()->setBody($content, self::CONTENT_TYPE_HTML);
 
         return $this;
+    }
+
+    /**
+     * Set content dynamically by params
+     * @param $params
+     * @param $content
+     * @return string
+     */
+    public function setDynamicContent(array $params, string $content)
+    {
+        $processed_content = preg_replace_callback(
+            '~\{(.*?)\}~si',
+            function ($match) use ($params) {
+                return str_replace($match[0], isset($params[$match[1]]) ? $params[$match[1]] : $match[0], $match[0]);
+            },
+            $content
+        );
+
+        return $processed_content;
     }
 }
