@@ -107,7 +107,7 @@ trait JobTrait
      */
     protected function validateConfigurations()
     {
-        $this->validateQueueNameConfiguration();
+        //$this->validateQueueNameConfiguration();
         $this->validateBeanstalkConfiguration();
         $this->validateEmailConfiguration();
     }
