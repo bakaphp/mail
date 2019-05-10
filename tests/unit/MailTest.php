@@ -26,9 +26,9 @@ class AuthTest extends PhalconUnitTestCase
     {
         //send email
         $this->_getDI()->get('mail')
-            ->to('max@mctekk.com')
+            ->to('bakaphpmail@getnada.com')
             ->subject('Test Template Email queue')
-            ->params(['name' => 'dfad'])
+            ->params(['name' => 'Max'])
             ->template() // email.volt
             ->send();
     }
@@ -42,7 +42,7 @@ class AuthTest extends PhalconUnitTestCase
     {
         //send email
         $this->_getDI()->get('mail')
-            ->to('max@mctekk.com')
+            ->to('bakaphpmail@getnada.com')
             ->subject('Test Template Email queue')
             ->params(['name' => 'dfad'])
             ->smtp(['username' => 'max@mctekk.com', 'password' => 'nosenose'])
