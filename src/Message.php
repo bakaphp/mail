@@ -190,10 +190,7 @@ class Message extends \Phalcon\Mailer\Message
     {
         $this->viewPath = $template;
 
-        //if we have params thats means we are using a template
-        if (is_array($this->params)) {
-            $content = $this->getManager()->setRenderView($this->viewPath, $this->params);
-        }
+        $content = $this->getManager()->setRenderView($this->viewPath, $this->params);
 
         $this->getMessage()->setBody($content, self::CONTENT_TYPE_HTML);
 
