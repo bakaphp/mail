@@ -11,8 +11,8 @@ class AuthTest extends PhalconUnitTestCase
     {
         //send email
         $this->_getDI()->get('mail')
-            ->to('max@mctekk.com')
-            ->subject('Test Normal Email queue')
+            ->to('bakaphpmail@getnada.com')
+            ->subject('Test Normal Email Queue')
             ->content('normal email send via queue')
             ->send();
     }
