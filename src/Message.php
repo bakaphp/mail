@@ -79,7 +79,6 @@ class Message extends \Phalcon\Mailer\Message
 
         //send to queue
         $queue = $this->getManager()->getQueue();
-        //$queueName = $this->
 
         if ($this->auth) {
             $queue->putInTube($this->queueName, [
@@ -90,11 +89,6 @@ class Message extends \Phalcon\Mailer\Message
             $queue->putInTube($this->queueName, $this->getMessage());
         }
 
-        /* $count = $this->getManager()->getSwift()->send($this->getMessage(), $this->failedRecipients);
-    if ($eventManager) {
-    $eventManager->fire('mailer:afterSend', $this, [$count, $this->failedRecipients]);
-    }
-    return $count;*/
     }
 
     /**
