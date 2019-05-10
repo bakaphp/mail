@@ -15,7 +15,7 @@ class Message extends \Phalcon\Mailer\Message
 {
     protected $queueName = 'email_queue';
     protected $viewPath = null;
-    protected $params = null;
+    protected $params = [];
     protected $viewsDirLocal = null;
     protected $smtp = null;
     protected $auth = false;
@@ -34,7 +34,7 @@ class Message extends \Phalcon\Mailer\Message
      */
     public function content($content, $contentType = self::CONTENT_TYPE_HTML, $charset = null)
     {
-        if (isset($this->params) && is_array($this->params)) {
+        if ($this->params) {
             $content = $this->setDynamicContent($this->params, $content);
         }
 
@@ -160,7 +160,7 @@ class Message extends \Phalcon\Mailer\Message
      *
      * @return $this
      */
-    public function params($params)
+    public function params(array $params)
     {
         $this->params = $params;
         return $this;
