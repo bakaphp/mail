@@ -2,9 +2,8 @@
 
 class AuthTest extends PhalconUnitTestCase
 {
-
     /**
-     * Test normal email
+     * Test normal email.
      *
      * @return boolean
      */
@@ -19,7 +18,7 @@ class AuthTest extends PhalconUnitTestCase
     }
 
     /**
-     * Test html email
+     * Test html email.
      *
      * @return boolean
      */
@@ -35,7 +34,7 @@ class AuthTest extends PhalconUnitTestCase
     }
 
     /**
-     * test the smtp configuration
+     * test the smtp configuration.
      *
      * @return boolean
      */
@@ -52,16 +51,17 @@ class AuthTest extends PhalconUnitTestCase
     }
 
     /**
-     * this runs before everyone
-     */
-    protected function setUp()
+    * Test normal email.
+    *
+    * @return boolean
+    */
+    public function testSimpleEmailNow()
     {
-        $this->_getDI();
-
+        //send email
+        $this->_getDI()->get('mail')
+            ->to('max@mctekk.com')
+            ->subject('Test Normal Email queue')
+            ->content('normal email send via queue')
+            ->sendNow();
     }
-
-    protected function tearDown()
-    {
-    }
-
 }

@@ -8,7 +8,6 @@
             "email": "max@mctekk.com"
         }
     ],
-    "minimum-stability": "dev",
     "require": {
         "php": ">=7.0",
         "ext-phalcon": ">=3.0.0",
@@ -19,6 +18,7 @@
     "require-dev": {
         "codeception/verify": "*",
         "vlucas/phpdotenv": "^2.0",
+        "codeception/codeception": "2.4"
     },
     "autoload": {
         "psr-4": {
