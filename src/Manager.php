@@ -5,7 +5,7 @@ namespace Baka\Mail;
 use Phalcon\Mvc\View\Engine\Volt;
 
 /**
- * Class Manager
+ * Class Manager.
  *
  * @package Phalcon\Manager
  */
@@ -14,7 +14,7 @@ class Manager extends \Phalcon\Mailer\Manager
     protected $queue;
 
     /**
-     *  Overwrite this funciton to use ower mail message
+     *  Overwrite this funciton to use ower mail message.
      *
      *  Create a new Message instance.
      *
@@ -44,7 +44,7 @@ class Manager extends \Phalcon\Mailer\Manager
     }
 
     /**
-     * Configure MailerManager class
+     * Configure MailerManager class.
      *
      * @param array $config
      *
@@ -61,7 +61,7 @@ class Manager extends \Phalcon\Mailer\Manager
     }
 
     /**
-     * Register the queue service
+     * Register the queue service.
      *
      * @return BeanstalkExtended
      */
@@ -71,7 +71,7 @@ class Manager extends \Phalcon\Mailer\Manager
     }
 
     /**
-     * Get the queue service
+     * Get the queue service.
      *
      * @return BeanstalkExtended
      */
@@ -81,7 +81,7 @@ class Manager extends \Phalcon\Mailer\Manager
     }
 
     /**
-     * Renders a view
+     * Renders a view.
      *
      * @param $viewPath
      * @param $params

@@ -22,7 +22,7 @@ abstract class PhalconUnitTestCase extends PhalconTestCase
     private $_loaded = false;
 
     /**
-     * Setup phalconPHP DI to use for testing components
+     * Setup phalconPHP DI to use for testing components.
      *
      * @return Phalcon\DI
      */
@@ -33,10 +33,20 @@ abstract class PhalconUnitTestCase extends PhalconTestCase
         $di = new Phalcon\DI();
 
         /**
-         * DB Config
+         * DB Config.
          * @var array
          */
         $this->_config = new \Phalcon\Config([
+            'application' => [ //@todo migration to app
+                'production' => getenv('PRODUCTION'),
+                'development' => getenv('DEVELOPMENT'),
+                'jwtSecurity' => getenv('JWT_SECURITY'),
+                'debug' => [
+                    'profile' => getenv('DEBUG_PROFILE'),
+                    'logQueries' => getenv('DEBUG_QUERY'),
+                    'logRequest' => getenv('DEBUG_REQUEST')
+                ],
+            ],
             'database' => [
                 'adapter' => 'Mysql',
                 'host' => getenv('DATABASE_HOST'),
@@ -60,7 +70,7 @@ abstract class PhalconUnitTestCase extends PhalconTestCase
                 ],
                 'debug' => [
                     'from' => [
-                        'email' => 'noreply@naruho.do',
+                        'email' => 'noreply@mctekk.com',
                         'name' => 'YOUR FROM NAME',
                     ],
                 ],
@@ -81,12 +91,16 @@ abstract class PhalconUnitTestCase extends PhalconTestCase
 
         $config = $this->_config;
 
+        $di->set('config', function () use ($config) {
+            //setup
+            return $config;
+        });
+
         /**
-         * Everything needed initialize phalconphp db
+         * Everything needed initialize phalconphp db.
          */
 
         $di->set('mail', function () use ($config, $di) {
-
             //setup
             $mailer = new \Baka\Mail\Manager($config->email->toArray());
 
@@ -94,10 +108,9 @@ abstract class PhalconUnitTestCase extends PhalconTestCase
         });
 
         /**
-         * config queue by default Beanstalkd
+         * config queue by default Beanstalkd.
          */
         $di->set('queue', function () use ($config) {
-
             //Connect to the queue
             $queue = new \Phalcon\Queue\Beanstalk\Extended([
                 'host' => $config->beanstalk->host,
@@ -108,21 +121,19 @@ abstract class PhalconUnitTestCase extends PhalconTestCase
         });
 
         $di->set('view', function () use ($config) {
-
             $view = new \Phalcon\Mvc\View\Simple();
             $view->setViewsDir(realpath(dirname(__FILE__)) . '/view/');
 
             $view->registerEngines([
                 '.volt' => function ($view, $di) use ($config) {
-
                     $volt = new VoltEngine($view, $di);
 
-                    $volt->setOptions(array(
+                    $volt->setOptions([
                         'compiledPath' => realpath(dirname(__FILE__)) . '/view/cache/',
                         'compiledSeparator' => '_',
                         //since production is true or false, and we inverse the value to be false in production true in debug
                         'compileAlways' => true,
-                    ));
+                    ]);
 
                     return $volt;
                 },
@@ -143,30 +154,29 @@ abstract class PhalconUnitTestCase extends PhalconTestCase
         }, true);
 
         $di->set('db', function () use ($config, $di) {
-
             //db connection
-            $connection = new Phalcon\Db\Adapter\Pdo\Mysql(array(
+            $connection = new Phalcon\Db\Adapter\Pdo\Mysql([
                 'host' => $config->database->host,
                 'username' => $config->database->username,
                 'password' => $config->database->password,
                 'dbname' => $config->database->dbname,
                 'charset' => 'utf8',
-            ));
+            ]);
 
             return $connection;
         });
 
         /**
-         * Start the session the first time some component request the session service
+         * Start the session the first time some component request the session service.
          */
         $di->set('session', function () use ($config) {
-            $memcache = new \Phalcon\Session\Adapter\Memcache(array(
+            $memcache = new \Phalcon\Session\Adapter\Memcache([
                 'host' => $config->memcache->host, // mandatory
                 'post' => $config->memcache->port, // optional (standard: 11211)
                 'lifetime' => 8600, // optional (standard: 8600)
                 'prefix' => 'naruhodo', // optional (standard: [empty_string]), means memcache key is my-app_31231jkfsdfdsfds3
                 'persistent' => false, // optional (standard: false)
-            ));
+            ]);
 
             //only start the session if its not already started
             if (!isset($_SESSION)) {
@@ -174,9 +184,20 @@ abstract class PhalconUnitTestCase extends PhalconTestCase
             }
 
             return $memcache;
-
         });
 
         return $di;
+    }
+
+    /**
+    * this runs before everyone.
+    */
+    protected function setUp()
+    {
+        $this->_getDI();
+    }
+
+    protected function tearDown()
+    {
     }
 }

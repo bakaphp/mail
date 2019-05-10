@@ -3,9 +3,11 @@
 namespace Baka\Mail;
 
 use Exception;
+use Swift_SmtpTransport;
+use Swift_Mailer;
 
 /**
- * Class Message
+ * Class Message.
  *
  * @package Phalcon\Mailer
  */
@@ -96,7 +98,7 @@ class Message extends \Phalcon\Mailer\Message
     }
 
     /**
-     * Send message instantly, without a queue
+     * Send message instantly, without a queue.
      *
      * @return void
      */
@@ -110,12 +112,11 @@ class Message extends \Phalcon\Mailer\Message
         $host = $config->email->host;
         $port = $config->email->port;
 
-        $transport = \Swift_SmtpTransport::newInstance($host, $port);
+        $transport = (new Swift_SmtpTransport($host, $port))
+                        ->setUsername($username)
+                        ->setPassword($password);
 
-        $transport->setUsername($username);
-        $transport->setPassword($password);
-
-        $swift = \Swift_Mailer::newInstance($transport);
+        $swift = new Swift_Mailer($transport);
 
         $failures = [];
 
@@ -123,7 +124,7 @@ class Message extends \Phalcon\Mailer\Message
     }
 
     /**
-     * Overwrite the baka SMTP connection for this current email
+     * Overwrite the baka SMTP connection for this current email.
      *
      * @param  array  $smtp
      * @return this
@@ -146,7 +147,7 @@ class Message extends \Phalcon\Mailer\Message
     }
 
     /**
-     * Set the queue name if the user wants to shange it
+     * Set the queue name if the user wants to shange it.
      *
      * @param string $queuName
      *
@@ -159,7 +160,7 @@ class Message extends \Phalcon\Mailer\Message
     }
 
     /**
-     * Set variables to views
+     * Set variables to views.
      *
      * @param string $params
      *
@@ -172,7 +173,7 @@ class Message extends \Phalcon\Mailer\Message
     }
 
     /**
-     * The local path to the folder viewsDir only this message. (OPTIONAL)
+     * The local path to the folder viewsDir only this message. (OPTIONAL).
      *
      * @param string $dir
      *
@@ -185,7 +186,7 @@ class Message extends \Phalcon\Mailer\Message
     }
 
     /**
-     * view relative to the folder viewsDir (REQUIRED)
+     * view relative to the folder viewsDir (REQUIRED).
      *
      * @param string $template
      *
@@ -206,7 +207,7 @@ class Message extends \Phalcon\Mailer\Message
     }
 
     /**
-     * Set content dynamically by params
+     * Set content dynamically by params.
      * @param $params
      * @param $content
      * @return string
