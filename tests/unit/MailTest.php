@@ -29,7 +29,7 @@ class AuthTest extends PhalconUnitTestCase
             ->to('max@mctekk.com')
             ->subject('Test Template Email queue')
             ->params(['name' => 'dfad'])
-            ->template('email.volt') //you can also use template() default template is email.volt
+            ->template() // email.volt
             ->send();
     }
 
@@ -46,7 +46,7 @@ class AuthTest extends PhalconUnitTestCase
             ->subject('Test Template Email queue')
             ->params(['name' => 'dfad'])
             ->smtp(['username' => 'max@mctekk.com', 'password' => 'nosenose'])
-            ->template('email.volt') //you can also use template() default template is email.volt
+            ->template() // email.volt
             ->send();
     }
 
