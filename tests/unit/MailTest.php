@@ -58,10 +58,15 @@ class AuthTest extends PhalconUnitTestCase
     public function testSimpleEmailNow()
     {
         //send email
-        $this->_getDI()->get('mail')
-            ->to('max@mctekk.com')
-            ->subject('Test Normal Email queue')
-            ->content('normal email send via queue')
+        $mailer = $this->_getDI()->get('mail');
+
+        $mailer->to('bakaphpmail@getnada.com')
+            ->subject('Test Normal Email')
+            ->content('Normal email sendnow')
             ->sendNow();
+
+            $this->assertEmpty(
+                $mailer->getFailedRecipients()
+            );
     }
 }
