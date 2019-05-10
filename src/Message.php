@@ -147,7 +147,7 @@ class Message extends \Phalcon\Mailer\Message
      *
      * @return $this
      */
-    public function queue($queue)
+    public function queue(string $queue)
     {
         $this->queueName = $queue;
         return $this;
@@ -173,7 +173,7 @@ class Message extends \Phalcon\Mailer\Message
      *
      * @return $this
      */
-    public function viewDir($dir)
+    public function viewDir(string $dir)
     {
         $this->viewsDirLocal = $dir;
         return $this;
