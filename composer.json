@@ -13,12 +13,16 @@
         "ext-phalcon": ">=3.0.0",
         "phalcon/incubator": ">=3.0",
         "duncan3dc/fork-helper": "^2.2.0",
-        "swiftmailer/swiftmailer": "^6"
+        "swiftmailer/swiftmailer": "^6",
+        "symfony/var-dumper": "^4.2"
     },
     "require-dev": {
-        "codeception/verify": "*",
-        "vlucas/phpdotenv": "^2.0",
-        "codeception/codeception": "2.4"
+        "codeception/codeception": "2.5.*",
+        "codeception/verify": "0.4.0",
+        "vlucas/phpdotenv": "^2.0"
+    },
+    "scripts": {
+        "test": "./vendor/bin/codecept run"
     },
     "autoload": {
         "psr-4": {
