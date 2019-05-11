@@ -15,7 +15,7 @@ class Message extends \Phalcon\Mailer\Message
 {
     protected $queueName = 'email_queue';
     protected $viewPath = null;
-    protected $params = null;
+    protected $params = [];
     protected $viewsDirLocal = null;
     protected $smtp = null;
     protected $auth = false;
@@ -34,7 +34,7 @@ class Message extends \Phalcon\Mailer\Message
      */
     public function content($content, $contentType = self::CONTENT_TYPE_HTML, $charset = null)
     {
-        if (isset($this->params) && is_array($this->params)) {
+        if ($this->params) {
             $content = $this->setDynamicContent($this->params, $content);
         }
 
@@ -79,7 +79,6 @@ class Message extends \Phalcon\Mailer\Message
 
         //send to queue
         $queue = $this->getManager()->getQueue();
-        //$queueName = $this->
 
         if ($this->auth) {
             $queue->putInTube($this->queueName, [
@@ -90,11 +89,6 @@ class Message extends \Phalcon\Mailer\Message
             $queue->putInTube($this->queueName, $this->getMessage());
         }
 
-        /* $count = $this->getManager()->getSwift()->send($this->getMessage(), $this->failedRecipients);
-    if ($eventManager) {
-    $eventManager->fire('mailer:afterSend', $this, [$count, $this->failedRecipients]);
-    }
-    return $count;*/
     }
 
     /**
@@ -153,7 +147,7 @@ class Message extends \Phalcon\Mailer\Message
      *
      * @return $this
      */
-    public function queue($queue)
+    public function queue(string $queue)
     {
         $this->queueName = $queue;
         return $this;
@@ -166,7 +160,7 @@ class Message extends \Phalcon\Mailer\Message
      *
      * @return $this
      */
-    public function params($params)
+    public function params(array $params)
     {
         $this->params = $params;
         return $this;
@@ -179,7 +173,7 @@ class Message extends \Phalcon\Mailer\Message
      *
      * @return $this
      */
-    public function viewDir($dir)
+    public function viewDir(string $dir)
     {
         $this->viewsDirLocal = $dir;
         return $this;
@@ -196,10 +190,7 @@ class Message extends \Phalcon\Mailer\Message
     {
         $this->viewPath = $template;
 
-        //if we have params thats means we are using a template
-        if (is_array($this->params)) {
-            $content = $this->getManager()->setRenderView($this->viewPath, $this->params);
-        }
+        $content = $this->getManager()->setRenderView($this->viewPath, $this->params);
 
         $this->getMessage()->setBody($content, self::CONTENT_TYPE_HTML);
 

@@ -11,8 +11,8 @@ class AuthTest extends PhalconUnitTestCase
     {
         //send email
         $this->_getDI()->get('mail')
-            ->to('max@mctekk.com')
-            ->subject('Test Normal Email queue')
+            ->to('bakaphpmail@getnada.com')
+            ->subject('Test Normal Email Queue')
             ->content('normal email send via queue')
             ->send();
     }
@@ -26,10 +26,10 @@ class AuthTest extends PhalconUnitTestCase
     {
         //send email
         $this->_getDI()->get('mail')
-            ->to('max@mctekk.com')
+            ->to('bakaphpmail@getnada.com')
             ->subject('Test Template Email queue')
-            ->params(['name' => 'dfad'])
-            ->template('email.volt') //you can also use template() default template is email.volt
+            ->params(['name' => 'Max'])
+            ->template() // email.volt
             ->send();
     }
 
@@ -42,11 +42,11 @@ class AuthTest extends PhalconUnitTestCase
     {
         //send email
         $this->_getDI()->get('mail')
-            ->to('max@mctekk.com')
+            ->to('bakaphpmail@getnada.com')
             ->subject('Test Template Email queue')
             ->params(['name' => 'dfad'])
             ->smtp(['username' => 'max@mctekk.com', 'password' => 'nosenose'])
-            ->template('email.volt') //you can also use template() default template is email.volt
+            ->template() // email.volt
             ->send();
     }
 
@@ -58,10 +58,15 @@ class AuthTest extends PhalconUnitTestCase
     public function testSimpleEmailNow()
     {
         //send email
-        $this->_getDI()->get('mail')
-            ->to('max@mctekk.com')
-            ->subject('Test Normal Email queue')
-            ->content('normal email send via queue')
+        $mailer = $this->_getDI()->get('mail');
+
+        $mailer->to('bakaphpmail@getnada.com')
+            ->subject('Test Normal Email')
+            ->content('Normal email sendnow')
             ->sendNow();
+
+            $this->assertEmpty(
+                $mailer->getFailedRecipients()
+            );
     }
 }
