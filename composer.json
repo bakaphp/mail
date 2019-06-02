@@ -9,7 +9,7 @@
         }
     ],
     "require": {
-        "php": ">=7.0",
+        "php": ">=7.2",
         "ext-phalcon": ">=3.0.0",
         "phalcon/incubator": ">=3.0",
         "duncan3dc/fork-helper": "^2.2.0",
