@@ -18,7 +18,7 @@
     },
     "require-dev": {
         "codeception/codeception": "2.5.*",
-        "codeception/verify": "0.4.0",
+        "codeception/verify": "1.0.0",
         "vlucas/phpdotenv": "^2.0"
     },
     "scripts": {
