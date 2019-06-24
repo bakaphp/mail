@@ -19,7 +19,7 @@
     "require-dev": {
         "codeception/codeception": "2.5.*",
         "codeception/verify": "0.4.0",
-        "vlucas/phpdotenv": "^2.0"
+        "vlucas/phpdotenv": "^3.4"
     },
     "scripts": {
         "test": "./vendor/bin/codecept run"
